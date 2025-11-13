@@ -74,4 +74,23 @@ public class Creature
         else
             Console.WriteLine($"Creature {Name} cannot upgrade, level is already at the maximum!");
     }
+
+    public void Go(Direction direction)
+    {
+        // odczytanie kierunku i zmiana na małą literę
+        string currentDirection = direction.ToString().ToLower();
+        Console.WriteLine($"{Name} goes {currentDirection}");
+    }
+
+    public void Go(Direction[] directions)
+    {
+        foreach (var direction in directions)
+            Go(direction);
+    }
+
+    public void Go(string directions)
+    {
+        Direction[] dirs = DirectionParser.Parse(directions);
+        Go(dirs);
+    }
 }
