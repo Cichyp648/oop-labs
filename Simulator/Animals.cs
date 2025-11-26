@@ -12,8 +12,36 @@ public class Animals
     public uint Size { get; set; } = 3;
 
     // właściwość odczytu Info
-    public string Info
+    public virtual string Info
     {
         get { return $"{Description} <{Size}>"; }
+    }
+
+    public override string ToString()
+    {
+        string classInfo = this.GetType().Name.ToUpper();
+        return $"{classInfo}: {Info}";
+    }
+}
+
+public class Birds : Animals
+{
+    private bool CanFly = true;
+
+    private string CanFlyInfo()
+    {
+        if (CanFly) return "fly+";
+        else return "fly-";
+    }
+
+    public override string Info
+    {
+        get { return $"{Description} ({CanFlyInfo}) <{Size}>"; }
+    }
+
+    public override string ToString()
+    {
+        string classInfo = this.GetType().Name.ToUpper();
+        return $"{classInfo}: {Info}";
     }
 }
