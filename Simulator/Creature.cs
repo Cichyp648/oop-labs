@@ -79,7 +79,7 @@ public class Elf : Creature
     {
         get => agility;
         // walidacja przeniesiona do Validator.Limiter
-        init => agility = Validator.Limiter(value, 1, 10);
+        set => agility = Validator.Limiter(value, 1, 10);
     }
 
     public void Sing()
@@ -90,6 +90,7 @@ public class Elf : Creature
             skillCounter++;
             if (skillCounter == 3)
             {
+                Agility++;
                 Console.WriteLine($"{Name} has leveled up his agility! His current level is {Agility}");
                 skillCounter = 0;
             }
@@ -116,7 +117,7 @@ public class Orc : Creature
     {
         get => rage;
         // walidacja przeniesiona do Validator.Limiter
-        init => rage = Validator.Limiter(value, 1, 10);
+        set => rage = Validator.Limiter(value, 1, 10);
     }
     public void Hunt()
     {
@@ -126,6 +127,7 @@ public class Orc : Creature
             skillCounter++;
             if (skillCounter == 2)
             {
+                Rage++;
                 Console.WriteLine($"{Name} has leveled up his rage! His current level is {Rage}");
                 skillCounter = 0;
             }

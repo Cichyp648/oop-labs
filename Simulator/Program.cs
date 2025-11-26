@@ -7,9 +7,9 @@ internal class Program
         Console.WriteLine("Starting Simulator!\n");
         // TestCreatures();
         // TestDirections();
-        // TestElfsAndOrcs();
+        TestElfsAndOrcs();
         // TestValidators();
-        TestObjectsToString();
+        //TestObjectsToString();
     }
 
     static void TestObjectsToString()
@@ -68,7 +68,7 @@ internal class Program
     */
 
 
-    /*
+    
     static void TestElfsAndOrcs()
     {
         Console.WriteLine("HUNT TEST\n");
@@ -101,7 +101,7 @@ internal class Program
             Console.WriteLine($"{creature.Name,-15}: {creature.Power}");
         }
     }
-    */
+    
 
     /*
     static void TestCreatures()
