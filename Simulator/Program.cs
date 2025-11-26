@@ -7,9 +7,46 @@ internal class Program
         Console.WriteLine("Starting Simulator!\n");
         // TestCreatures();
         // TestDirections();
-        TestElfsAndOrcs();
+        // TestElfsAndOrcs();
+        TestValidators();
     }
 
+    static void TestValidators()
+    {
+        Elf e = new Elf { Name = "   Shrek    ", Level = 20 };
+        e.SayHi();
+        e.Upgrade();
+        Console.WriteLine(e.Info);
+
+        Orc o = new Orc("  ", -5);
+        o.SayHi();
+        o.Upgrade();
+        Console.WriteLine(o.Info);
+
+        e = new Elf("  donkey ") { Level = 7 };
+        e.SayHi();
+        e.Upgrade();
+        Console.WriteLine(e.Info);
+
+        e = new Elf("Puss in Boots – a clever and brave cat.");
+        e.SayHi();
+        e.Upgrade();
+        Console.WriteLine(e.Info);
+
+        o = new Orc("a                            troll name", 5);
+        o.SayHi();
+        o.Upgrade();
+        Console.WriteLine(o.Info);
+
+        var a = new Animals() { Description = "   Cats " };
+        Console.WriteLine(a.Info);
+
+        a = new Animals() { Description = "Mice           are great", Size = 40 };
+        Console.WriteLine(a.Info);
+    }
+
+
+    /*
     static void TestElfsAndOrcs()
     {
         Console.WriteLine("HUNT TEST\n");
@@ -42,6 +79,7 @@ internal class Program
             Console.WriteLine($"{creature.Name,-15}: {creature.Power}");
         }
     }
+    */
 
     /*
     static void TestCreatures()
@@ -77,7 +115,9 @@ internal class Program
         a = new() { Description = "Mice           are great", Size = 40 };
         Console.WriteLine(a.Info);
     }
+    */
 
+    /*
     static void TestDirections()
     {
         Creature c = new("Shrek", 7);

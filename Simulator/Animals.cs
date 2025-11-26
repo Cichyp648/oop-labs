@@ -1,33 +1,13 @@
-﻿using System.Xml.Linq;
-
-namespace Simulator;
+﻿namespace Simulator;
 
 public class Animals
 {
     private string description = "Unknown";
 
-    // kod z zadania
-    // dodana walidacja do init
+    // walidacja przeniesiona do Validator.Shortener
     public required string Description {
         get { return description; }
-        init
-        {
-            string val = value.Trim();
-
-            if (val.Length < 3)
-                val = val.PadRight(3, '#');
-
-            if (val.Length > 25)
-                val = val.Substring(0, 15).TrimEnd();
-
-            if (val.Length < 3)
-                val = val.PadRight(3, '#');
-
-            if (char.IsLower(val[0]))
-                val = char.ToUpper(val[0]) + val.Substring(1);
-
-            description = val;
-        }
+        init => description = Validator.Shortener(value, 3, 15, '#');
     }
     public uint Size { get; set; } = 3;
 

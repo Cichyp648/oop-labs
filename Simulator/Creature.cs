@@ -1,4 +1,6 @@
-﻿namespace Simulator;
+﻿using System.Reflection.Emit;
+
+namespace Simulator;
 
 public abstract class Creature
 {
@@ -8,42 +10,16 @@ public abstract class Creature
     // odczyt imienia
     public string Name
     {
-        get { return name; }
-        // walidacja imienia, init zamiast set - tylko jednorazowe ustalenie imienia
-        init
-        {
-            string val = value.Trim(' ');
-
-            if (val.Length < 3)
-                val = val.PadRight(3, '#');
-
-            if (val.Length > 25)
-                val = val.Substring(0, 25).TrimEnd();
-
-            if (val.Length < 3)
-                val = val.PadRight(3, '#');
-
-            if (char.IsLower(val[0]))
-                val = char.ToUpper(val[0]) + val.Substring(1);
-
-            name = val;
-        }
+        get => name;
+        // walidacja przeniesiona do Validator.Shortener
+        init => name = Validator.Shortener(value, 3, 25, '#');
     }
 
-    // odczyt imienia
     public int Level
     {
-        get { return level; }
-        // walidacja przez init, ograniczenie do przedziału 1-10
-        init
-        {
-            if (value < 1)
-                level = 1;
-            else if (value > 10)
-                level = 10;
-            else
-                level = value;
-        }
+        get => level;
+        // walidacja przeniesiona do Validator.Limiter
+        init => level = Validator.Limiter(value, 1, 10);
     }
 
     // konstruktor z wartościami automatycznymi
@@ -98,13 +74,9 @@ public class Elf : Creature
     int agility, skillCounter;
     public int Agility
     {
-        get { return agility; }
-        init
-        {
-            if (value<0) agility = 0;
-            else if (value>10) agility = 10;
-            else agility = value;
-        }
+        get => agility;
+        // walidacja przeniesiona do Validator.Limiter
+        init => agility = Validator.Limiter(value, 1, 10);
     }
 
     public void Sing()
@@ -135,13 +107,9 @@ public class Orc : Creature
     int rage, skillCounter;
     public int Rage
     {
-        get { return rage; }
-        init
-        {
-            if (value < 0) rage = 0;
-            else if (value > 10) rage = 10;
-            else rage = value;
-        }
+        get => rage;
+        // walidacja przeniesiona do Validator.Limiter
+        init => rage = Validator.Limiter(value, 1, 10);
     }
     public void Hunt()
     {
