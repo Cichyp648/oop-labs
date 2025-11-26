@@ -1,6 +1,6 @@
 ﻿namespace Simulator;
 
-public class Creature
+public abstract class Creature
 {
     private string name = "Unknown"; // domyślne imie
     private int level = 1; // domyślny poziom 1
@@ -53,10 +53,7 @@ public class Creature
         Level = level;
     }
 
-    public void SayHi()
-    {
-        Console.WriteLine($"Hi! They call me the {Name} and i'm on level {Level}!");
-    }
+    public abstract void SayHi();
 
     // odczyt imienia i poziomu
     public string Info
@@ -93,4 +90,77 @@ public class Creature
         Direction[] dirs = DirectionParser.Parse(directions);
         Go(dirs);
     }
+
+    public abstract int Power { get; }
+}
+public class Elf : Creature
+{
+    int agility, skillCounter;
+    public int Agility
+    {
+        get { return agility; }
+        init
+        {
+            if (value<0) agility = 0;
+            else if (value>10) agility = 10;
+            else agility = value;
+        }
+    }
+
+    public void Sing()
+    {
+        Console.WriteLine($"{Name} is singing.");
+        if (Agility < 10)
+        {
+            skillCounter++;
+            if (skillCounter == 3)
+            {
+                Console.WriteLine($"{Name} has leveled up his agility! His current level is {Agility}");
+                skillCounter = 0;
+            }
+        }
+    }
+
+    public Elf() : base() { }
+    public Elf(string name = "Unnamed Elf", int level = 1, int agility = 1) : base(name, level)
+    {
+        Agility = agility;
+    }
+    public override void SayHi() => Console.WriteLine($"Hi, I'm {Name}, my level is {Level}, my agility is {Agility}.");
+    public override int Power => 8 * Level + 2 * Agility;
+}
+
+public class Orc : Creature
+{
+    int rage, skillCounter;
+    public int Rage
+    {
+        get { return rage; }
+        init
+        {
+            if (value < 0) rage = 0;
+            else if (value > 10) rage = 10;
+            else rage = value;
+        }
+    }
+    public void Hunt()
+    {
+        Console.WriteLine($"{Name} is hunting.");
+        if (Rage < 10)
+        {
+            skillCounter++;
+            if (skillCounter == 2)
+            {
+                Console.WriteLine($"{Name} has leveled up his rage! His current level is {Rage}");
+                skillCounter = 0;
+            }
+        }
+    }
+    public Orc() { }
+    public Orc(string name = "Unnamed Orc", int level = 1, int rage = 1) : base(name, level)
+    {
+        Rage = rage;
+    }
+    public override void SayHi() => Console.WriteLine($"Hi, I'm {Name}, my level is {Level}, my rage is {Rage}.");
+    public override int Power => 7 * Level + 3 * Rage;
 }
