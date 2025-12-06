@@ -1,4 +1,5 @@
-﻿namespace Simulator;
+﻿namespace Runner;
+using Simulator;
 
 internal class Program
 {
@@ -68,25 +69,25 @@ internal class Program
     */
 
 
-    
+
     static void TestElfsAndOrcs()
     {
         Console.WriteLine("HUNT TEST\n");
         var o = new Orc() { Name = "Gorbag", Rage = 7 };
-        o.SayHi();
+        o.Greeting();
         for (int i = 0; i < 10; i++)
         {
             o.Hunt();
-            o.SayHi();
+            o.Greeting();
         }
 
         Console.WriteLine("\nSING TEST\n");
         var e = new Elf("Legolas", agility: 2);
-        e.SayHi();
+        e.Greeting();
         for (int i = 0; i < 10; i++)
         {
             e.Sing();
-            e.SayHi();
+            e.Greeting();
         }
 
         Console.WriteLine("\nPOWER TEST\n");
@@ -101,7 +102,7 @@ internal class Program
             Console.WriteLine($"{creature.Name,-15}: {creature.Power}");
         }
     }
-    
+
 
     /*
     static void TestCreatures()

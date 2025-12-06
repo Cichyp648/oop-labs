@@ -29,7 +29,7 @@ public abstract class Creature
         Level = level;
     }
 
-    public abstract void SayHi();
+    public abstract void Greeting();
 
     // odczyt imienia i poziomu
     public abstract string Info { get; }
@@ -51,23 +51,23 @@ public abstract class Creature
             Console.WriteLine($"Creature {Name} cannot upgrade, level is already at the maximum!");
     }
 
-    public void Go(Direction direction)
-    {
-        // odczytanie kierunku i zmiana na małą literę
-        string currentDirection = direction.ToString().ToLower();
-        Console.WriteLine($"{Name} goes {currentDirection}");
-    }
+    public string Go(Direction direction) => $"{direction.ToString().ToLower()}";
 
-    public void Go(Direction[] directions)
+    public string Go(Direction[] directions)
     {
+        var list = new List<string>();
+
         foreach (var direction in directions)
-            Go(direction);
+            list.Add(Go(direction));
+
+        return string.Join(" ", list);
     }
 
-    public void Go(string directions)
+
+    public string Go(string directions)
     {
         Direction[] dirs = DirectionParser.Parse(directions);
-        Go(dirs);
+        return Go(dirs);
     }
 
     public abstract int Power { get; }
@@ -84,14 +84,12 @@ public class Elf : Creature
 
     public void Sing()
     {
-        Console.WriteLine($"{Name} is singing.");
         if (Agility < 10)
         {
             skillCounter++;
             if (skillCounter == 3)
             {
                 Agility++;
-                Console.WriteLine($"{Name} has leveled up his agility! His current level is {Agility}");
                 skillCounter = 0;
             }
         }
@@ -102,7 +100,7 @@ public class Elf : Creature
     {
         Agility = agility;
     }
-    public override void SayHi() => Console.WriteLine($"Hi, I'm {Name}, my level is {Level}, my agility is {Agility}.");
+    public override void Greeting() => Console.WriteLine($"Hi, I'm {Name}, my level is {Level}, my agility is {Agility}.");
     public override int Power => 8 * Level + 2 * Agility;
     public override string Info
     {
@@ -121,14 +119,12 @@ public class Orc : Creature
     }
     public void Hunt()
     {
-        Console.WriteLine($"{Name} is hunting.");
         if (Rage < 10)
         {
             skillCounter++;
             if (skillCounter == 2)
             {
                 Rage++;
-                Console.WriteLine($"{Name} has leveled up his rage! His current level is {Rage}");
                 skillCounter = 0;
             }
         }
@@ -138,7 +134,7 @@ public class Orc : Creature
     {
         Rage = rage;
     }
-    public override void SayHi() => Console.WriteLine($"Hi, I'm {Name}, my level is {Level}, my rage is {Rage}.");
+    public override void Greeting() => Console.WriteLine($"Hi, I'm {Name}, my level is {Level}, my rage is {Rage}.");
     public override int Power => 7 * Level + 3 * Rage;
     public override string Info
     {
