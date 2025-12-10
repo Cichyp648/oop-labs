@@ -14,8 +14,9 @@ public class Simulation
     public Creature CurrentCreature => Creatures[currentMoveIndex % Creatures.Count];
     public string CurrentMoveName => moveList.Count == 0 ? "" : moveList[currentMoveIndex % moveList.Count].ToLower();
 
-    public Simulation(Map map, List<Creature> creatures,
-        List<Point> positions, string moves)
+    private Direction[] movesArray;
+
+    public Simulation(Map map, List<Creature> creatures, List<Point> positions, string moves)
     {
         Map = map ?? throw new ArgumentNullException(nameof(map));
         Creatures = creatures ?? throw new ArgumentNullException(nameof(creatures));
@@ -27,7 +28,7 @@ public class Simulation
         if (Creatures.Count != Positions.Count)
             throw new ArgumentException("Number of creatures must match number of positions.");
 
-        // przypisanie stworów do mapy
+ 
         for (int i = 0; i < Creatures.Count; i++)
         {
             var creature = Creatures[i];
@@ -35,37 +36,30 @@ public class Simulation
             creature.AssignMap(Map, pos);
         }
 
-        moveList = new List<string>(Moves.Split(new[] { ' ', ',', ';' }, StringSplitOptions.RemoveEmptyEntries));
+        movesArray = DirectionParser.Parse(Moves);
+        currentMoveIndex = 0;
     }
+
 
     public void Turn()
     {
-        if (Finished)
-            throw new InvalidOperationException("Simulation is already finished.");
+        if (Finished) throw new InvalidOperationException("Simulation finished.");
 
-        if (moveList.Count == 0)
+        if (currentMoveIndex >= movesArray.Length)
         {
             Finished = true;
             return;
         }
 
-        string moveName = CurrentMoveName;
+        Creature creature = Creatures[currentMoveIndex % Creatures.Count];
+        Direction move = movesArray[currentMoveIndex];
 
-        try
-        {
-            var directions = DirectionParser.Parse(moveName);
-            foreach (var dir in directions)
-            {
-                CurrentCreature.Go(dir);
-            }
-        }
-        catch { }
+        creature.Go(move);
 
         currentMoveIndex++;
-         
-        if (currentMoveIndex >= moveList.Count)
-        {
+
+        if (currentMoveIndex >= movesArray.Length)
             Finished = true;
-        }
     }
+
 }
