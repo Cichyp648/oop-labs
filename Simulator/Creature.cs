@@ -4,74 +4,66 @@ namespace Simulator;
 
 public abstract class Creature
 {
-    private string name = "Unknown"; // domyślne imie
-    private int level = 1; // domyślny poziom 1
+    private string name = "Unknown";
+    private int level = 1;
 
-    // odczyt imienia
     public string Name
     {
         get => name;
-        // walidacja przeniesiona do Validator.Shortener
         init => name = Validator.Shortener(value, 3, 25, '#');
     }
 
     public int Level
     {
         get => level;
-        // walidacja przeniesiona do Validator.Limiter
         init => level = Validator.Limiter(value, 1, 10);
     }
 
-    // konstruktor z wartościami automatycznymi
+    public Map? Map { get; private set; } = null;
+    public Point? Position { get; private set; } = null;
+
     public Creature(string name = "Unnamed Monstrosity", int level = 1)
     {
         Name = name;
         Level = level;
     }
 
+    public void AssignMap(Map map, Point p)
+    {
+        Map = map;
+        Position = p;
+        map.Add(this, p);
+    }
+
+    public void Go(Direction direction)
+    {
+        if (Map == null || Position == null)
+            return;
+
+        var newPos = Map.Next(Position.Value, direction);
+        Map.Move(this, Position.Value, newPos);
+        Position = newPos;
+    }
+
+    public void Go(Direction[] directions)
+    {
+        foreach (var dir in directions)
+            Go(dir);
+    }
+
+    public void Go(string directions)
+    {
+        var dirs = DirectionParser.Parse(directions);
+        Go(dirs);
+    }
+
     public abstract void Greeting();
-
-    // odczyt imienia i poziomu
     public abstract string Info { get; }
-    
-    public override string ToString()
-    {
-        string classInfo = this.GetType().Name.ToUpper();
-        return $"{classInfo}: {Info}";
-    }
-
-    public void Upgrade()
-    {
-        if (level < 10)
-        {
-            level++;
-            Console.WriteLine($"Creature {Name} has been upgraded to level {Level}!");
-        }
-        else
-            Console.WriteLine($"Creature {Name} cannot upgrade, level is already at the maximum!");
-    }
-
-    public string Go(Direction direction) => $"{direction.ToString().ToLower()}";
-
-    public string Go(Direction[] directions)
-    {
-        var list = new List<string>();
-
-        foreach (var direction in directions)
-            list.Add(Go(direction));
-
-        return string.Join(" ", list);
-    }
-
-
-    public string Go(string directions)
-    {
-        Direction[] dirs = DirectionParser.Parse(directions);
-        return Go(dirs);
-    }
-
     public abstract int Power { get; }
+
+    public override string ToString() => $"{this.GetType().Name.ToUpper()}: {Info}";
 }
+
 public class Elf : Creature
 {
     int agility, skillCounter;
