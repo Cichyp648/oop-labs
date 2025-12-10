@@ -8,11 +8,20 @@ internal class Program
         Console.WriteLine("Starting Simulator!\n");
         // TestCreatures();
         // TestDirections();
-        TestElfsAndOrcs();
+        // TestElfsAndOrcs();
         // TestValidators();
-        //TestObjectsToString();
+        // TestObjectsToString();
+        TestPoint();
     }
 
+    static void TestPoint()
+    {
+        Point p = new(10, 25);
+        Console.WriteLine(p.Next(Direction.Right));          // (11, 25)
+        Console.WriteLine(p.NextDiagonal(Direction.Right));  // (11, 24)
+    }
+
+    /*
     static void TestObjectsToString()
     {
         object[] myObjects = {
@@ -30,7 +39,8 @@ internal class Program
             ELF: E## [10][0]
             ORC: Morgash [6][4]
         */
-    }
+    // }
+    
 
     /*
     static void TestValidators()
@@ -69,7 +79,7 @@ internal class Program
     */
 
 
-
+    /* 
     static void TestElfsAndOrcs()
     {
         Console.WriteLine("HUNT TEST\n");
@@ -102,7 +112,7 @@ internal class Program
             Console.WriteLine($"{creature.Name,-15}: {creature.Power}");
         }
     }
-
+    */
 
     /*
     static void TestCreatures()
