@@ -1,8 +1,9 @@
 ﻿using System.Reflection.Emit;
 
 namespace Simulator;
+using Simulator.Maps;
+public abstract class Creature : IMappable
 
-public abstract class Creature
 {
     private string name = "Unknown";
     private int level = 1;

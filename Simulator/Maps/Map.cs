@@ -1,54 +1,57 @@
-﻿using Simulator;
-using System.Collections.Generic;
+﻿    namespace Simulator.Maps;
 
 public abstract class Map
 {
     public int SizeX { get; }
     public int SizeY { get; }
 
-    private readonly Dictionary<Point, List<Creature>> creatures = new();
+    private readonly Dictionary<Point, List<IMappable>> objects = new();
 
     protected Map(int sizeX, int sizeY)
     {
         if (sizeX < 5 || sizeX > 20)
-            throw new ArgumentOutOfRangeException(nameof(sizeX), "Width must be between 5 and 20.");
+            throw new ArgumentOutOfRangeException(nameof(sizeX));
         if (sizeY < 5 || sizeY > 20)
-            throw new ArgumentOutOfRangeException(nameof(sizeY), "Height must be between 5 and 20.");
+            throw new ArgumentOutOfRangeException(nameof(sizeY));
 
         SizeX = sizeX;
         SizeY = sizeY;
     }
 
-    public virtual bool Exist(Point p) => p.X >= 0 && p.X < SizeX && p.Y >= 0 && p.Y < SizeY;
+    public virtual bool Exist(Point p) =>
+        p.X >= 0 && p.X < SizeX && p.Y >= 0 && p.Y < SizeY;
 
     public abstract Point Next(Point p, Direction d);
     public abstract Point NextDiagonal(Point p, Direction d);
 
-    public void Add(Creature creature, Point p)
+    public void Add(IMappable obj, Point p)
     {
         if (!Exist(p))
-            throw new ArgumentOutOfRangeException(nameof(p), "Point outside map bounds.");
+            throw new ArgumentOutOfRangeException(nameof(p));
 
-        if (!creatures.ContainsKey(p))
-            creatures[p] = new List<Creature>();
+        if (!objects.ContainsKey(p))
+            objects[p] = new List<IMappable>();
 
-        creatures[p].Add(creature);
+        objects[p].Add(obj);
     }
 
-    public void Remove(Creature creature, Point p)
+    public void Remove(IMappable obj, Point p)
     {
-        if (creatures.ContainsKey(p))
-            creatures[p].Remove(creature);
+        if (objects.ContainsKey(p))
+            objects[p].Remove(obj);
     }
 
-    public void Move(Creature creature, Point from, Point to)
+    public void Move(IMappable obj, Point from, Point to)
     {
-        Remove(creature, from);
-        Add(creature, to);
+        Remove(obj, from);
+        Add(obj, to);
     }
 
-    public List<Creature> At(Point p) =>
-        creatures.ContainsKey(p) ? new List<Creature>(creatures[p]) : new List<Creature>();
+    public List<IMappable> At(Point p) =>
+        objects.ContainsKey(p)
+            ? new List<IMappable>(objects[p])
+            : new List<IMappable>();
 
-    public List<Creature> At(int x, int y) => At(new Point(x, y));
+    public List<IMappable> At(int x, int y) =>
+        At(new Point(x, y));
 }

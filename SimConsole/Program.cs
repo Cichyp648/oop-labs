@@ -9,7 +9,7 @@ namespace SimConsole
         static void Main()
         {
             SmallSquareMap map = new(5);
-            List<Creature> creatures = new List<Creature>
+            List<IMappable> creatures = new List<IMappable>
             {
                 new Orc("Gorbag"),
                 new Elf("Elandor")

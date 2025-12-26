@@ -1,49 +1,57 @@
-﻿namespace Simulator;
+﻿using Simulator.Maps;
+
+namespace Simulator;
 
 public class Simulation
 {
     private int currentMoveIndex = 0;
-    private List<string> moveList = new();
+    private readonly List<string> moveList = new();
 
     public Map Map { get; }
-    public List<Creature> Creatures { get; }
+    public List<IMappable> Mappables { get; }
     public List<Point> Positions { get; }
     public string Moves { get; }
     public bool Finished { get; private set; } = false;
 
-    public Creature CurrentCreature => Creatures[currentMoveIndex % Creatures.Count];
-    public string CurrentMoveName => moveList.Count == 0 ? "" : moveList[currentMoveIndex % moveList.Count].ToLower();
+    public IMappable CurrentMappable =>
+        Mappables[currentMoveIndex % Mappables.Count];
 
-    private Direction[] movesArray;
+    public string CurrentMoveName =>
+        moveList.Count == 0
+            ? ""
+            : moveList[currentMoveIndex % moveList.Count].ToLower();
 
-    public Simulation(Map map, List<Creature> creatures, List<Point> positions, string moves)
+    private readonly Direction[] movesArray;
+
+    public Simulation(
+        Map map,
+        List<IMappable> mappables,
+        List<Point> positions,
+        string moves)
     {
         Map = map ?? throw new ArgumentNullException(nameof(map));
-        Creatures = creatures ?? throw new ArgumentNullException(nameof(creatures));
+        Mappables = mappables ?? throw new ArgumentNullException(nameof(mappables));
         Positions = positions ?? throw new ArgumentNullException(nameof(positions));
         Moves = moves ?? "";
 
-        if (Creatures.Count == 0)
-            throw new ArgumentException("Creatures list cannot be empty.");
-        if (Creatures.Count != Positions.Count)
-            throw new ArgumentException("Number of creatures must match number of positions.");
-
- 
-        for (int i = 0; i < Creatures.Count; i++)
-        {
-            var creature = Creatures[i];
-            var pos = Positions[i];
-            creature.AssignMap(Map, pos);
-        }
+        if (Mappables.Count == 0)
+            throw new ArgumentException("Mappables list cannot be empty.");
+        if (Mappables.Count != Positions.Count)
+            throw new ArgumentException("Number of mappables must match number of positions.");
 
         movesArray = DirectionParser.Parse(Moves);
         currentMoveIndex = 0;
-    }
 
+        for(int i = 0; i < Mappables.Count; i++)
+        {
+            Map.Add(Mappables[i], Positions[i]);
+        }
+    }
 
     public void Turn()
     {
-        if (Finished) throw new InvalidOperationException("Simulation finished.");
+        if (Finished)
+            throw new InvalidOperationException("Simulation finished.");
 
         if (currentMoveIndex >= movesArray.Length)
         {
@@ -51,15 +59,22 @@ public class Simulation
             return;
         }
 
-        Creature creature = Creatures[currentMoveIndex % Creatures.Count];
+        int index = currentMoveIndex % Mappables.Count;
+
+        IMappable obj = Mappables[index];
         Direction move = movesArray[currentMoveIndex];
 
-        creature.Go(move);
+        Point oldPos = Positions[index];
+        Point newPos = oldPos.Next(move);
+
+        obj.Go(move);
+
+        Positions[index] = newPos;
+        Map.Move(obj, oldPos, newPos);
 
         currentMoveIndex++;
 
         if (currentMoveIndex >= movesArray.Length)
             Finished = true;
     }
-
 }
