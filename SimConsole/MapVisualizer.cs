@@ -65,19 +65,17 @@ public class MapVisualizer
 
     private char GetCellSymbol(int x, int y)
     {
-        var creatures = map.At(x, y);
-        if (creatures.Count == 0)
-            return ' '; // puste pole
-        if (creatures.Count == 1)
+        var objects = map.At(x, y);
+
+        if (objects.Count == 0)
+            return ' ';
+
+        if (objects.Count == 1)
         {
-            var c = creatures[0];
-            return c switch
-            {
-                Orc => 'O',
-                Elf => 'E',
-                _ => '?' // inne klasy, na wszelki wypadek dodawania kolejnych, dla których mógłbym zapomnieć o znaku i mieć niewidzalnego stwora
-            };
+            var obj = objects[0];
+            return obj.Symbol;
         }
-        return 'X'; // więcej niż jeden stwór
+
+        return 'X';
     }
 }

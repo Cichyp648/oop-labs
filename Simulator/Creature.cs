@@ -2,11 +2,14 @@
 
 namespace Simulator;
 using Simulator.Maps;
+using System.Linq.Expressions;
+
 public abstract class Creature : IMappable
 
 {
     private string name = "Unknown";
     private int level = 1;
+    public virtual char Symbol => 'c';
 
     public string Name
     {
@@ -68,6 +71,7 @@ public abstract class Creature : IMappable
 public class Elf : Creature
 {
     int agility, skillCounter;
+    public override char Symbol => 'E';
     public int Agility
     {
         get => agility;
@@ -104,6 +108,7 @@ public class Elf : Creature
 public class Orc : Creature
 {
     int rage, skillCounter;
+    public override char Symbol => 'O';
     public int Rage
     {
         get => rage;

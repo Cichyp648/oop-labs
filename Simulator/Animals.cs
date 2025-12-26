@@ -1,47 +1,101 @@
-﻿namespace Simulator;
+﻿using Simulator;
+using Simulator.Maps;
 
-public class Animals
+namespace Simulator;
+
+public class Animals : IMappable
 {
     private string description = "Unknown";
 
-    // walidacja przeniesiona do Validator.Shortener
-    public required string Description {
-        get { return description; }
+    public Map? Map { get; private set; }
+    public Point? Position { get; protected set; }
+    public virtual char Symbol => 'A';
+
+    public string Description
+    {
+        get => description;
         init => description = Validator.Shortener(value, 3, 15, '#');
     }
+
     public uint Size { get; set; } = 3;
 
-    // właściwość odczytu Info
-    public virtual string Info
+    public virtual string Info => $"{Description} <{Size}>";
+
+    public Animals() { }
+
+    public Animals(string description)
     {
-        get { return $"{Description} <{Size}>"; }
+        Description = description;
     }
 
+    public void AssignMap(Map map, Point p)
+    {
+        Map = map;
+        Position = p;
+        map.Add(this, p);
+    }
+
+    public virtual void Go(Direction direction)
+    {
+        if (Map == null || Position == null)
+            return;
+
+        var newPos = Map.Next(Position.Value, direction);
+        Map.Move(this, Position.Value, newPos);
+        Position = newPos;
+    }
+    
     public override string ToString()
     {
-        string classInfo = this.GetType().Name.ToUpper();
+        string classInfo = GetType().Name.ToUpper();
         return $"{classInfo}: {Info}";
     }
 }
 
 public class Birds : Animals
 {
-    private bool CanFly = true;
+    public bool CanFly { get; set; } = true;
 
-    private string CanFlyInfo()
+    public override char Symbol => CanFly ? 'B' : 'b';
+
+    // ===== Constructors =====
+    public Birds() : base() { }
+
+    public Birds(string description, bool canFly = true)
+        : base(description)
     {
-        if (CanFly) return "fly+";
-        else return "fly-";
+        CanFly = canFly;
     }
 
-    public override string Info
+    public override void Go(Direction direction)
     {
-        get { return $"{Description} ({CanFlyInfo}) <{Size}>"; }
+        if (Map == null || Position == null)
+            return;
+
+        Point newPos;
+
+        if (CanFly)
+        {
+            // lot o dwa pola
+            var temp = Map.Next(Position.Value, direction);
+            newPos = Map.Next(temp, direction);
+        }
+        else
+        {
+            // nielot: ruch po skosie
+            newPos = Map.NextDiagonal(Position.Value, direction);
+        }
+
+        Map.Move(this, Position.Value, newPos);
+        Position = newPos;
     }
+
+    public override string Info =>
+        $"{Description} ({(CanFly ? "fly+" : "fly-")}) <{Size}>";
 
     public override string ToString()
     {
-        string classInfo = this.GetType().Name.ToUpper();
+        string classInfo = GetType().Name.ToUpper();
         return $"{classInfo}: {Info}";
     }
 }

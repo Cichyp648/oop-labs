@@ -6,4 +6,5 @@ public interface IMappable
 {
     void Go(Direction direction);
     string Info { get; }
+    char Symbol { get; }
 }
