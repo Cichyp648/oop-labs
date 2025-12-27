@@ -10,6 +10,7 @@ internal class Program
         Console.WriteLine("Select simulation:");
         Console.WriteLine("1 - Creatures");
         Console.WriteLine("2 - Animals");
+        Console.WriteLine("3 - History");
 
         var selection = Console.ReadKey().KeyChar;
         Console.Clear();
@@ -22,6 +23,9 @@ internal class Program
 
             case '2':
                 Sim2();
+                break;
+            case '3':
+                Sim3();
                 break;
         }
     }
@@ -95,4 +99,41 @@ internal class Program
             Thread.Sleep(500);
         }
     }
+
+    static void Sim3()
+    {
+        var map = new SmallTorusMap(8, 6);
+
+        List<IMappable> objects = new()
+    {
+        new Elf("Elandor"),
+        new Orc("Gorbag"),
+        new Animals("Rabbits"),
+        new Birds("Eagles", true),
+        new Birds("Ostriches", false),
+    };
+
+        List<Point> positions = new()
+    {
+        new(1,1),
+        new(2,2),
+        new(3,3),
+        new(4,3),
+        new(5,2)
+    };
+
+        string moves = "uldruldruldruldruldr";
+
+        var simulation = new Simulation(map, objects, positions, moves);
+
+        var log = new SimulationLog(simulation);
+        var visualizer = new LogVisualizer(log);
+
+        foreach (var turn in new[] { 5, 10, 15, 20 })
+        {
+            visualizer.Draw(turn);
+            Console.ReadKey();
+        }
+    }
+    
 }
