@@ -13,6 +13,9 @@ public class Simulation
     public string Moves { get; }
     public bool Finished { get; private set; } = false;
 
+    // ======= NOWE: HISTORIA SYMULACJI =======
+    public List<string> History { get; } = new();
+
     public IMappable CurrentMappable =>
         Mappables[currentMoveIndex % Mappables.Count];
 
@@ -42,10 +45,15 @@ public class Simulation
         movesArray = DirectionParser.Parse(Moves);
         currentMoveIndex = 0;
 
-        for(int i = 0; i < Mappables.Count; i++)
+        for (int i = 0; i < Mappables.Count; i++)
         {
             Map.Add(Mappables[i], Positions[i]);
+            History.Add(
+                $"Dodano {Mappables[i]} na pozycję {Positions[i]}"
+            );
         }
+
+        History.Add("Start symulacji");
     }
 
     public void Turn()
@@ -56,6 +64,7 @@ public class Simulation
         if (currentMoveIndex >= movesArray.Length)
         {
             Finished = true;
+            History.Add("Symulacja zakończona");
             return;
         }
 
@@ -67,6 +76,10 @@ public class Simulation
         Point oldPos = Positions[index];
         Point newPos = oldPos.Next(move);
 
+        History.Add(
+            $"Ruch {currentMoveIndex + 1}: {obj} wykonuje {move} z {oldPos} do {newPos}"
+        );
+
         obj.Go(move);
 
         Positions[index] = newPos;
@@ -75,6 +88,9 @@ public class Simulation
         currentMoveIndex++;
 
         if (currentMoveIndex >= movesArray.Length)
+        {
             Finished = true;
+            History.Add("Symulacja zakończona");
+        }
     }
 }

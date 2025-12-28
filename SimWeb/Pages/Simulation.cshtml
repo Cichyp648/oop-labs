@@ -1,0 +1,11 @@
+﻿@page
+@model SimWeb.Pages.SimulationModel
+
+<h1>Historia symulacji</h1>
+
+<ul>
+    @foreach (var h in Model.History)
+    {
+        <li>@h</li>
+    }
+</ul>
